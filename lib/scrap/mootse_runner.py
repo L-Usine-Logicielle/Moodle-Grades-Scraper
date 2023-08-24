@@ -3,12 +3,12 @@ from traceback import format_exc
 from bs4 import BeautifulSoup
 
 from config.config import (DISCORD_WEBHOOK_URL, MAIL_PASSWORD, MAIL_PORT,
-                           MAIL_RECIPIENTS, MAIL_SERVER, MAIL_USERNAME)
+                           MAIL_RECIPIENTS, MAIL_SERVER, MAIL_USERNAME, MOOTSE_MASTER_URL)
 from lib.database import DatabaseConnector
 from lib.discord import DiscordNotifier
 from lib.mail import MailNotifier
 from lib.scrap.mootse_utils import MootseUtils
-
+from lib.metrics import MetricsExpoter
 
 class MootseRunner(MootseUtils):
     """ Scrapping de Mootse (le moodle de Télécom Saint-Étienne) """
@@ -16,6 +16,7 @@ class MootseRunner(MootseUtils):
     def __init__(self) -> None:
         super().__init__()
         self.db = DatabaseConnector()
+        self.exporter = MetricsExpoter(MOOTSE_MASTER_URL)
 
     def __alert(self, subject: str) -> None:
         if MAIL_RECIPIENTS:
@@ -36,6 +37,7 @@ class MootseRunner(MootseUtils):
             try:
                 discord = DiscordNotifier(DISCORD_WEBHOOK_URL)
                 discord.alert(subject)
+                self.exporter.send_metric("discord-webhook-sent-count")
             except:
                 self.logger.critical(
                     "Impossible d'envoyer l'alerte Discord.", exc_info=format_exc())
@@ -53,6 +55,7 @@ class MootseRunner(MootseUtils):
                 self.logger.info(
                     f"Nouvelle note détectée en : {record[0]}.")
                 self.db.update_topic(url, temp)
+                self.exporter.send_metric(record[0])
                 self.__alert(record[0])
 
     def run_check(self):

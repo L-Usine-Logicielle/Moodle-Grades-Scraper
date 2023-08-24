@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mootse-runner',
-    version='1.1',
+    version='1.2',
     install_requires=[
         'APScheduler==3.10.1',
         'beautifulsoup4==4.12.2',

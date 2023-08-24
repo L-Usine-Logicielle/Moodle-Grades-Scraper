@@ -4,8 +4,8 @@ from traceback import format_exc
 import requests
 from bs4 import BeautifulSoup
 
-from config.config import MOOTSE_PASSWORD, MOOTSE_URL, MOOTSE_USERNAME
-
+from config.config import MOOTSE_PASSWORD, MOOTSE_URL, MOOTSE_USERNAME, MOOTSE_MASTER_URL
+from lib.metrics import MetricsExpoter
 
 class MootseUtils():
 
@@ -14,6 +14,7 @@ class MootseUtils():
         self.mootse_username = MOOTSE_USERNAME
         self.mootse_password = MOOTSE_PASSWORD
         self.mootse_url = MOOTSE_URL
+        self.exporter = MetricsExpoter(MOOTSE_MASTER_URL)
 
     def __configure_logger(self):
         logger = getLogger(__name__)
@@ -53,9 +54,11 @@ class MootseUtils():
                 'div', {'class': 'alert alert-danger'}).text.strip()
             if error_message == "La connexion a échoué, veuillez réessayer":
                 raise ConnectionError()
+            
         except ConnectionError:
             exit(-1)
         except:
             self.logger.debug("Authentification réussie à Mootse.", exc_info=format_exc())
 
+        self.exporter.send_metric("moodle-access-count")
         self.logger.info("Connexion à Mootse réussie.")
