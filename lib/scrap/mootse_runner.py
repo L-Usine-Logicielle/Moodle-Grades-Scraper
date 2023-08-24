@@ -37,7 +37,10 @@ class MootseRunner(MootseUtils):
             try:
                 discord = DiscordNotifier(DISCORD_WEBHOOK_URL)
                 discord.alert(subject)
-                self.exporter.send_metric("discord-webhook-sent-count")
+                try:
+                    self.exporter.send_metric("discord-webhook-sent-count")
+                except:
+                    self.logger.debug("Impossible d'envoyer les métriques.", exc_info=format_exc())
             except:
                 self.logger.critical(
                     "Impossible d'envoyer l'alerte Discord.", exc_info=format_exc())
@@ -55,7 +58,10 @@ class MootseRunner(MootseUtils):
                 self.logger.info(
                     f"Nouvelle note détectée en : {record[0]}.")
                 self.db.update_topic(url, temp)
-                self.exporter.send_metric(record[0])
+                try:
+                    self.exporter.send_metric(record[0])
+                except:
+                    self.logger.debug("Impossible d'envoyer les métriques.", exc_info=format_exc())
                 self.__alert(record[0])
 
     def run_check(self):
