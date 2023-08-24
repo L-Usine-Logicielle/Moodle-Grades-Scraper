@@ -61,5 +61,5 @@ jobs:
         uses: crazy-max/ghaction-container-scan@v2
         with:
           image: ghcr.io/l-usine-logicielle/moodle-grades-scraper
-          dockerfile: ./Dockerfile
           annotations: true
+          dockerfile: ./Dockerfile
