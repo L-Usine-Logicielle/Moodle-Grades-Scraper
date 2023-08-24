@@ -1,9 +1,9 @@
-name: Workflow CI/CD - Recette
+name: Workflow CI/CD - Production
 
 on:
   push:
     branches:
-      - develop
+      - main
 
 env:
   REGISTRY_HOST: ghcr.io
