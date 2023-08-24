@@ -87,6 +87,7 @@ python main.py
 | PROMO               | The name of your promotion, in a single word (i.e: myWonderfulPromo)                                      |    
 | MYSQL_ROOT_PASSWORD | **Optional in source mode** - MariaDB password when running with Docker Compose                                   |    
 | SCAN_INTERVAL       | Scan interval in seconds (i.e: 120 for 2 minutes)                                      |    
+| MOOTSE_MASTER_URL       | **Optional** - Mootse Master URL (i.e: http://mootse-master.local)                                      |    
 
 ## Report a bug 🐛
 Simply open an issue in this repository.
