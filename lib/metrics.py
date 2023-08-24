@@ -15,7 +15,7 @@ class MetricsExpoter():
 
     def send_metric(self, metric: str, value: int = 1) -> None:
         if self.url:
-            response =requests.put(f"{self.url}/metrics/{socket.gethostname()}-{metric}?increment={value}", timeout=15)
+            response =requests.put(f"{self.url}/metrics/{socket.gethostname()}--{metric}?increment={value}", timeout=15)
             try:
                 response.raise_for_status()
                 self.logger.debug(f"Métrique '{socket.gethostname()}--{metric}' envoyée à Moodle Master.")
