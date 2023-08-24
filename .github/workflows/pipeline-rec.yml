@@ -1,0 +1,65 @@
+name: Workflow CI/CD - Recette
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  REGISTRY_HOST: ghcr.io
+
+jobs:
+  build:
+    name: Docker build
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Create Docker image
+      run: |
+        cd backend
+        docker build --no-cache -t ${REGISTRY_HOST}/l-usine-logicielle/moodle-grades-scraper .
+
+    - name: Log in to registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ env.REGISTRY_HOST }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push image to registry
+      run: docker push ${REGISTRY_HOST}/l-usine-logicielle/moodle-grades-scraper
+
+  scan:
+    name: Scan image
+    runs-on: self-hosted
+
+    needs: [build]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Log in to registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY_HOST }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v2
+        with:
+          image: ghcr.io/l-usine-logicielle/moodle-grades-scraper
+          dockerfile: ./Dockerfile
+          annotations: true
