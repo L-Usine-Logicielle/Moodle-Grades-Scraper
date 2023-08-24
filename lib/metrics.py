@@ -18,7 +18,7 @@ class MetricsExpoter():
             response =requests.put(f"{self.url}/metrics/{socket.gethostname()}-{metric}?increment={value}", timeout=15)
             try:
                 response.raise_for_status()
-                self.logger.debug(f"Métrique '{socket.gethostname()}-{metric}' envoyée à Moodle Master.")
+                self.logger.debug(f"Métrique '{socket.gethostname()}--{metric}' envoyée à Moodle Master.")
             except requests.exceptions.HTTPError as err:
                 raise Exception(f"Une erreur s'est produite : {err}") from err
             except requests.Timeout as err:
