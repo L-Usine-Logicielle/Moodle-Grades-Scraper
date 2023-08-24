@@ -4,6 +4,8 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from logging import getLogger, INFO, Formatter, StreamHandler
 from typing import List
+from lib.metrics import MetricsExpoter
+from config.config import MOOTSE_MASTER_URL
 
 class MailNotifier():
     def __init__(self, smtp_username: str, smtp_password: str, smtp_server: str, smtp_port: int) -> None:
@@ -11,6 +13,7 @@ class MailNotifier():
         self.__smtp_password = smtp_password
         self.__smtp_server = smtp_server
         self.__smtp_port = smtp_port
+        self.exporter = MetricsExpoter(MOOTSE_MASTER_URL)
         self.logger = getLogger(__name__)
         self.logger.setLevel(INFO)
         formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -27,6 +30,7 @@ class MailNotifier():
             server.login(self.__smtp_username, self.__smtp_password)
             server.sendmail(self.__smtp_username, recipient, msg.as_string())
             server.quit()
+            self.exporter.send_metric("mail-sent-count")
             self.logger.info("Mail envoyé avec succès à l'adresse : " + recipient)
         except Exception as e:
             self.logger.exception("Erreur lors de l'envoi du mail à l'adresse : " + recipient)
