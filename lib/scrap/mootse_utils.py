@@ -59,6 +59,9 @@ class MootseUtils():
             exit(-1)
         except:
             self.logger.debug("Authentification réussie à Mootse.", exc_info=format_exc())
+        try:
+            self.exporter.send_metric("moodle-access-count")
+        except:
+            self.logger.debug("Impossible d'envoyer les métriques.", exc_info=format_exc())
 
-        self.exporter.send_metric("moodle-access-count")
         self.logger.info("Connexion à Mootse réussie.")

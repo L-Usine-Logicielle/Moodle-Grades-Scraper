@@ -30,7 +30,10 @@ class MailNotifier():
             server.login(self.__smtp_username, self.__smtp_password)
             server.sendmail(self.__smtp_username, recipient, msg.as_string())
             server.quit()
-            self.exporter.send_metric("mail-sent-count")
+            try:
+                self.exporter.send_metric("mail-sent-count")
+            except:
+                self.logger.debug("Impossible d'envoyer les métriques.", exc_info=format_exc())
             self.logger.info("Mail envoyé avec succès à l'adresse : " + recipient)
         except Exception as e:
             self.logger.exception("Erreur lors de l'envoi du mail à l'adresse : " + recipient)
