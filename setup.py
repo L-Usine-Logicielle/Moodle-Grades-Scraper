@@ -7,7 +7,7 @@ setup(
         'APScheduler==3.10.1',
         'beautifulsoup4==4.12.2',
         'bs4==0.0.1',
-        'certifi==2022.12.7',
+        'certifi==2023.7.22',
         'charset-normalizer==3.1.0',
         'idna==3.4',
         'requests==2.28.2',
