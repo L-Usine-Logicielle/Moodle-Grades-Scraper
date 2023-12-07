@@ -1,6 +1,6 @@
 import mysql.connector
 
-from application.config.config import DB_HOST, DB_PASSWORD, DB_PORT, DB_USER
+from config.config import DB_HOST, DB_PASSWORD, DB_PORT, DB_USER
 
 try:
     cnx = mysql.connector.connect(
