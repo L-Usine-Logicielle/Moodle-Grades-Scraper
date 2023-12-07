@@ -3,6 +3,11 @@ FROM python:3.9
 WORKDIR /app
 COPY . /app
 
-RUN pip install -e .
+RUN addgroup --gid 1001 moodle \
+    && adduser --uid 1001 --disabled-password --no-create-home --ingroup moodle moodle \
+    && apt update \
+    && pip install -e .
 
-CMD ["python", "main.py"]
+USER moodle
+
+CMD ["python", "application/main.py"]

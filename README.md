@@ -64,7 +64,7 @@ pip install -e .
 ```
 7. Start the application
 ```
-python main.py
+python application/main.py
 ```
 
 ### About the .env 🔍

@@ -2,6 +2,7 @@ from setuptools import setup
 
 setup(
     name='mootse-runner',
+    packages=['application'],
     version='1.2',
     install_requires=[
         'APScheduler==3.10.1',
