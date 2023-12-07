@@ -15,14 +15,14 @@ services:
     container_name: mootse-runner
     env_file: .env
     image: ghcr.io/l-usine-logicielle/moodle-grades-scraper
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - mootse-mariadb
     restart: always
     healthcheck:
-      test: 'python healthcheck.py'
+      test: 'python application/healthcheck.py'
     networks:
       - mootse-network
 
