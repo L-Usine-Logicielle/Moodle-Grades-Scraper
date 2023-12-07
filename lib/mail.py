@@ -2,10 +2,13 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
-from logging import getLogger, INFO, Formatter, StreamHandler
+from logging import INFO, Formatter, StreamHandler, getLogger
+from traceback import format_exc
 from typing import List
-from lib.metrics import MetricsExpoter
+
 from config.config import MOOTSE_MASTER_URL
+from lib.metrics import MetricsExpoter
+
 
 class MailNotifier():
     def __init__(self, smtp_username: str, smtp_password: str, smtp_server: str, smtp_port: int) -> None:
@@ -16,7 +19,8 @@ class MailNotifier():
         self.exporter = MetricsExpoter(MOOTSE_MASTER_URL)
         self.logger = getLogger(__name__)
         self.logger.setLevel(INFO)
-        formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch = StreamHandler()
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
@@ -33,10 +37,13 @@ class MailNotifier():
             try:
                 self.exporter.send_metric("mail-sent-count")
             except:
-                self.logger.debug("Impossible d'envoyer les métriques.", exc_info=format_exc())
-            self.logger.info("Mail envoyé avec succès à l'adresse : " + recipient)
+                self.logger.debug(
+                    "Impossible d'envoyer les métriques.", exc_info=format_exc())
+            self.logger.info(
+                "Mail envoyé avec succès à l'adresse : " + recipient)
         except Exception as e:
-            self.logger.exception("Erreur lors de l'envoi du mail à l'adresse : " + recipient)
+            self.logger.exception(
+                "Erreur lors de l'envoi du mail à l'adresse : " + recipient)
 
     def __forge_mail(self, subject: str, recipient: str):
         event_html = f"""
@@ -147,7 +154,7 @@ class MailNotifier():
         html_part = MIMEText(html_content, 'html')
         msg.attach(html_part)
         self.__send_mail(msg, recipient)
-    
+
     def alert(self, subject: str, recipients: List[str]):
         for recipient in recipients:
             self.__forge_mail(subject, recipient)
