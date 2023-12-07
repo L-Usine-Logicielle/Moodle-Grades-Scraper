@@ -1,9 +1,8 @@
-import os
-import sys
+from os import environ
 
 def load_variables(var : str):
-    if var in os.environ:
-        variable = os.environ[var]
+    if var in environ:
+        variable = environ[var]
         return variable
-
-    raise RuntimeError(f'Merci de définir la variable : {var}')
+ 
+    raise RuntimeError(f'Please, define var : {var}')

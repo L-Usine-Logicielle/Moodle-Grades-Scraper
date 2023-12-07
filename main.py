@@ -5,8 +5,11 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 from config.config import SCAN_INTERVAL
 from lib.check import do_check
+from datetime import datetime
 
 if __name__ == "__main__":
     scheduler = BlockingScheduler(timezone='Europe/Paris')
-    scheduler.add_job(do_check, "interval", seconds=SCAN_INTERVAL)
+    job = scheduler.add_job(do_check, "interval", seconds=SCAN_INTERVAL)
+    job.modify(next_run_time=datetime.now())
     scheduler.start()
+
